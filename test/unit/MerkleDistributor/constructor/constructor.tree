@@ -1,0 +1,3 @@
+MerkleDistributorConstructorTest
+├── It should set the token to the provided address
+└── It should set the merkle root to the given root

@@ -1,0 +1,25 @@
+{
+  "name": "merkle-claim",
+  "version": "1.0.0",
+  "description": "Fully tested Merkle Claim implementation inspired by uniswap's version",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "forge test",
+    "generate:TestMerkleTree": "npx ts-node scripts/generateTestMerkleTree.ts",
+    "coverage": "forge coverage --report lcov && lcov --remove lcov.info '*/contracts/test/*' '*/test/*' '*/token/*' '*/utils/*' --output-file lcov.info  && genhtml lcov.info --branch-coverage --output-dir coverage"
+  },
+  "author": "Hector Roussille",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "ethers": "^6.16.0",
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.8.0",
+    "@openzeppelin/merkle-tree": "^1.0.8"
+  }
+}

@@ -1,0 +1,5 @@
+MerkleDistributorIsClaimedTest
+├── When the leaf has not been claimed
+│   └── It should return False
+└── When the leaf has been claimed
+    └── It should return True

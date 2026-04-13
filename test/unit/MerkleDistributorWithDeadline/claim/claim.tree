@@ -1,0 +1,13 @@
+MerkleDistributorWithDeadlineClaimTest
+├── When the deadline has passed
+│   └── It should revert
+└── When the deadline has not passed
+    ├── When the leaf has not been claimed
+    │   ├── When the proof is invalid
+    │   │   └── It should revert
+    │   └── When the proof is valid
+    │       ├── It should emit a Claimed event
+    │       ├── It should mark the leaf as claimed
+    │       └── It should transfer the specified amount to the claimant
+    └── When the leaf has been claimed
+        └── It should revert

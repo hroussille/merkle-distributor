@@ -1,0 +1,6 @@
+MerkleDistributorWithDeadlineRenounceOwnershipTest
+├── When the caller is not the owner
+│   └── It should revert
+└── When the caller is the owner
+    ├── It should transfer ownership to the 0 address
+    └── It should emit an OwnershipTransferred event

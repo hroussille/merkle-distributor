@@ -1,0 +1,7 @@
+MerkleDistributorConstructorWithDeadlineTest
+├── When the deadline is before the current time
+│   └── It should revert
+└── When the deadline is after the current time
+    ├── It should set the token to the provided address
+    ├── It should set the merkle root to the given root
+    └── It should set the deadline to the given timestamp
