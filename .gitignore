@@ -2,6 +2,9 @@
 cache/
 out/
 
+# Certora files
+**/.certora_internal/
+
 # Ignores development broadcast logs
 !/broadcast
 /broadcast/*/31337/
