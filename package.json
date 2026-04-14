@@ -10,6 +10,9 @@
   "scripts": {
     "test": "forge test",
     "generate:TestMerkleTree": "npx ts-node scripts/generateTestMerkleTree.ts",
+    "certora:MerkleDistributor": "certoraRun certora/MerkleDistributor/MerkleDistributor.conf",
+    "certora:MerkleDistributorWithDeadline": "certoraRun certora/MerkleDistributorWithDeadline/MerkleDistributorWithDeadline.conf",
+    "certora": "npm run certora:MerkleDistributor && npm run certora:MerkleDistributorWithDeadline",
     "coverage": "forge coverage --report lcov && lcov --remove lcov.info '*/contracts/test/*' '*/test/*' '*/token/*' '*/utils/*' --output-file lcov.info  && genhtml lcov.info --branch-coverage --output-dir coverage"
   },
   "author": "Hector Roussille",
