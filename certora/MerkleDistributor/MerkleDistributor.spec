@@ -49,18 +49,12 @@ rule monotonicity_of_isClaimed(method f) {
 
     // Snapshot isClaimed before performing the call for index
     uint256 index;
-
-    // Ensure that the invariant holds before the call is performed
-    requireInvariant bitmap_reflects_claimed_status(index);
     bool isClaimedBefore = isClaimed(index);
 
     // Perform a call to potentially change the state of isClaimed for a specific index
     env e;
     calldataarg args;
     f(e, args);
-
-    // Ensure that the invariant holds after the call is performed
-    requireInvariant bitmap_reflects_claimed_status(index);
 
     // Assert that if isClaimed was true before, it remains true after the call
     assert isClaimedBefore => isClaimed(index);
@@ -71,7 +65,6 @@ rule no_double_claims() {
     uint256 index;
     env e;
 
-    requireInvariant bitmap_reflects_claimed_status(index); // Ensure the invariant holds for the index
     require isClaimed(index); // Assume index is claimed for the sake of the rule
 
     // Attempt to claim the same index again, which should revert
@@ -87,9 +80,6 @@ rule no_double_claims() {
 // 3) Claim : only claim can decrease the contract balance & increase the account balance
 rule claim_effect_on_balances(method f) filtered { f -> f.contract != token } {
     env e;
-
-    require token.allowance(e, currentContract, e.msg.sender) == 0;
-    require e.msg.sender != currentContract;
 
     uint256 balanceBefore = token.balanceOf(e, currentContract);
 
@@ -119,7 +109,6 @@ rule claim_transfers_correct_amount() {
     uint256 amount;
     bytes32[] merkleProof;
 
-    require e.msg.sender != account;
     require account != currentContract;
     require account != 0;
     require amount > 0;

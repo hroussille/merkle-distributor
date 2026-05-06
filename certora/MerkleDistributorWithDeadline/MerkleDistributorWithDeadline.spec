@@ -16,10 +16,6 @@ methods {
 rule claim_effect_on_balances(method f) filtered { f -> f.contract != token } {
     env e;
 
-    require token.allowance(e, currentContract, e.msg.sender) == 0;
-    require e.msg.sender != currentContract;
-    require currentContract.token() == token;
-
     uint256 balanceBefore = token.balanceOf(e, currentContract);
 
     calldataarg args;
@@ -38,7 +34,6 @@ rule claim_transfers_correct_amount() {
     uint256 amount;
     bytes32[] merkleProof;
 
-    require e.msg.sender != account;
     require e.block.timestamp < endTime();
     require account != currentContract;
     require account != 0;
@@ -85,7 +80,6 @@ rule withdraw_succeeds_after_expiry() {
     env e;
 
     require e.msg.value == 0;
-    require currentContract.token() == token;
     require currentContract.owner() != 0 && currentContract.owner() != currentContract;
     require e.msg.sender == owner();
     require e.block.timestamp >= endTime();
@@ -102,7 +96,6 @@ rule withdraw_transfers_full_balance() {
     require e.block.timestamp >= endTime();
     require e.msg.sender == owner();
     require e.msg.value == 0;
-    require token() == token;
     require owner() != 0 && owner() != currentContract;
 
     uint256 contractBalanceBefore = token.balanceOf(e, currentContract);
