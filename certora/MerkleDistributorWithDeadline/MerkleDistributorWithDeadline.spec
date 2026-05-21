@@ -34,10 +34,8 @@ rule claim_transfers_correct_amount() {
     uint256 amount;
     bytes32[] merkleProof;
 
-    require e.block.timestamp < endTime();
     require account != currentContract;
     require account != 0;
-    require amount > 0;
 
     uint256 accountBefore = token.balanceOf(e, account);
     uint256 contractBefore = token.balanceOf(e, currentContract);
@@ -46,6 +44,33 @@ rule claim_transfers_correct_amount() {
 
     assert token.balanceOf(e, account) == accountBefore + amount;
     assert token.balanceOf(e, currentContract) == contractBefore - amount;
+}
+
+rule claim_liveness_pre_expiry() {
+    env e;
+    uint256 index;
+    address account;
+    uint256 amount;
+    bytes32[] merkleProof;
+
+    bool isClaimedBefore = isClaimed(index);
+
+    // The claim is not already clamed and the proof is valid pre-expiry
+    require isClaimed(index) == false;
+    require _verifyResult == true;
+    require e.block.timestamp < endTime();
+
+    // The tx has no value and the MerkleDistributor contract has enough balance to transfer the claimed amount
+    require e.msg.value == 0;
+    require token.balanceOf(e, currentContract) >= amount;
+
+    // The recipient account is not the zero address and not the contract itself
+    require account != 0;
+
+    claim@withrevert(e, index, account, amount, merkleProof);
+
+    // If the claim is valid and not already claimed, it never revert
+    assert !lastReverted;
 }
 
 // 7) claim should not be possible after the deadline
@@ -93,9 +118,6 @@ rule withdraw_succeeds_after_expiry() {
 rule withdraw_transfers_full_balance() {
     env e;
 
-    require e.block.timestamp >= endTime();
-    require e.msg.sender == owner();
-    require e.msg.value == 0;
     require owner() != 0 && owner() != currentContract;
 
     uint256 contractBalanceBefore = token.balanceOf(e, currentContract);

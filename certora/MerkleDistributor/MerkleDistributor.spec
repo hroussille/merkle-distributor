@@ -111,7 +111,6 @@ rule claim_transfers_correct_amount() {
 
     require account != currentContract;
     require account != 0;
-    require amount > 0;
 
     uint256 accountBefore = token.balanceOf(e, account);
     uint256 contractBefore = token.balanceOf(e, currentContract);
@@ -132,4 +131,30 @@ rule bitmap_correctly_set(uint256 index) {
     claim(e, index, account, amount, merkleProof);
 
     assert _bitmap[index / 256][index % 256] == true;
+}
+
+rule claim_liveness() {
+    env e;
+    uint256 index;
+    address account;
+    uint256 amount;
+    bytes32[] merkleProof;
+
+    bool isClaimedBefore = isClaimed(index);
+
+    // The claim is not already clamed and the proof is valid
+    require isClaimed(index) == false;
+    require _verifyResult == true;
+
+    // The tx has no value and the MerkleDistributor contract has enough balance to transfer the claimed amount
+    require e.msg.value == 0;
+    require token.balanceOf(e, currentContract) >= amount;
+
+    // The recipient account is not the zero address and not the contract itself
+    require account != 0;
+
+    claim@withrevert(e, index, account, amount, merkleProof);
+
+    // If the claim is valid and not already claimed, it never revert
+    assert !lastReverted;
 }
